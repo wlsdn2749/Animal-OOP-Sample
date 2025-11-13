@@ -19,7 +19,7 @@ public:
 
 	void StartAll()
 	{
-		for (auto& worker : _workers)
+		for (auto worker : _workers)
 		{
 			worker->Start();
 		}

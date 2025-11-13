@@ -189,4 +189,8 @@ int main()
 	Executor::Instance().StartAll();
 	Test::Test_UserMoveThread();
 	
+	while (true)
+	{
+
+	}
 }

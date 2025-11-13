@@ -14,6 +14,7 @@ public:
 	Worker() {};
 	virtual ~Worker() 
 	{
+		std::cout << "Worker Dtor" << std::endl;
 		if (_thread.joinable()) _thread.join();
 	};
 	
