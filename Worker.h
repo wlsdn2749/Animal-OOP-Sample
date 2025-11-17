@@ -7,9 +7,11 @@
 #include <chrono>
 #include <exception>
 #include <iostream>
+#include "JobTimerQueue.h"
 
 class Worker : public std::enable_shared_from_this<Worker>
-{
+{	
+
 public:
 	Worker() {};
 	virtual ~Worker() 
@@ -47,22 +49,49 @@ public:
 		if (!_jobQueue.empty())
 		{
 			auto job = PopJob();
-			job->Execute();
-		}		
+			if(job)
+				job->Execute();
+		}	
+
+		if (!_jobTimerQueue.Empty())
+		{
+			auto job = PopJobTimer();
+			if (job)
+				job->Execute();
+		}
 	}
 
+// Timer
 	void PushJob(std::shared_ptr<Job> job)
 	{
-		std::lock_guard<std::recursive_mutex> lock(_lock);
+		std::lock_guard<std::mutex> lock(_lock);
+		
 		_jobQueue.push(job);
 	}
 
+
 	std::shared_ptr<Job> PopJob()
 	{
-		std::lock_guard<std::recursive_mutex> lock(_lock);
+		std::lock_guard<std::mutex> lock(_lock);
+		if (_jobQueue.empty()) 
+			return nullptr;
+		
 		auto job = _jobQueue.front();
 		_jobQueue.pop();
 		return job;
+	}
+
+// JobTimer
+	void PushJobTimer(std::shared_ptr<JobTimer> jobTimer)
+	{
+		std::lock_guard<std::mutex> timerLock(_timerLock);
+		_jobTimerQueue.Push(jobTimer);
+	}
+
+	std::shared_ptr<JobTimer> PopJobTimer()
+	{
+		std::lock_guard<std::mutex> timerLock(_timerLock);
+		return _jobTimerQueue.Pop();
 	}
 public:
 	const size_t Size() noexcept
@@ -71,10 +100,13 @@ public:
 	}
 
 protected:	
-	std::recursive_mutex _lock{};
+	std::mutex _lock{};
+	std::mutex _timerLock{};
+
 	std::thread _thread;
 
 private:
-	std::queue<std::shared_ptr<Job>> _jobQueue{};
+	std::queue<std::shared_ptr<Job>>		_jobQueue{};
+	JobTimerQueue							_jobTimerQueue{};
 };
 

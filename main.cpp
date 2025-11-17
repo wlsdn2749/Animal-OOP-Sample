@@ -165,7 +165,7 @@ namespace Test
 	---------------------------------------------------------------------*/
 	void Test_UserMoveThread()
 	{
-		for (int i = 0; i < 20; ++i) // 동물 100마리
+		for (int i = 0; i < 1; ++i) // 동물 100마리
 		{
 			AnimalManager::Instance().CreateAnimal<Dog>();
 			AnimalManager::Instance().CreateAnimal<Cat>();
@@ -179,7 +179,38 @@ namespace Test
 			}
 		}
 	}
+	
+	void Test_PrintAnimalSounds()
+	{
+		for (int i = 0; i < 5; ++i)
+		{
+			AnimalManager::Instance().ForeachAnimals([](std::shared_ptr<Animal> animal)
+				{
+					animal->print_sound();
+				});
 
+			std::this_thread::sleep_for(std::chrono::seconds(3));
+		}
+	}
+
+
+	void Test_UpdateThreadkeys()
+	{
+		std::this_thread::sleep_for(std::chrono::seconds(10)); 
+
+		auto func1 = []()
+			{
+				AnimalManager::Instance().ForeachAnimals([](std::shared_ptr<Animal> animal)
+					{
+						animal->updateThreadKey();
+					});
+			};
+
+		ThreadLaunchManager::Instance().InsertFunc(func1);
+		ThreadLaunchManager::Instance().Start();
+		std::cout << "-------------------------Thread 변경-----------------------------------" << std::endl;
+
+	}
 
 }
 
@@ -187,7 +218,11 @@ int main()
 {
 	Executor::Instance().initialize(2); // Worker Thread 2
 	Executor::Instance().StartAll();
+
 	Test::Test_UserMoveThread();
+	Test::Test_UpdateThreadkeys(); // main
+	Test::Test_PrintAnimalSounds(); // main
+	
 	
 	while (true)
 	{

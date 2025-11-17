@@ -30,7 +30,7 @@ public:
 	virtual void print_name() { std::cout << "Default: print_name" << std::endl; };
 	virtual void print_age() 
 	{
-		std::cout << "Animal Type " << " ID: " << GetAnimalID() << " Age: " << GetAge() << std::endl; 
+		std::cout <<"Animal" << " " << "Thread ID " << _threadKey << " ID: " << GetAnimalID() << " Age: " << GetAge() << std::endl;
 	}
 	virtual void onUpdate()
 	{
@@ -48,6 +48,11 @@ public:
 			}, 1000); // 1초에 한번 호출
 
 	};
+	
+	virtual void updateThreadKey()
+	{
+		_threadKey = std::abs(_threadKey - 1); // 1이면 0, 0이면 1
+	}
 
 
 	void Init()
@@ -68,6 +73,11 @@ public:
 	const int GetAge()
 	{
 		return _age;
+	}
+
+	const int GetThreadkey()
+	{
+		return _threadKey;
 	}
 
 protected:

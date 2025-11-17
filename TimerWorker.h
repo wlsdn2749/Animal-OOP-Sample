@@ -15,7 +15,7 @@ public:
 public:
 	virtual void ExecuteJob() override
 	{
-		std::lock_guard<std::recursive_mutex> lock(_lock);
+		std::lock_guard<std::mutex> lock(_lock);
 		if (!_jobTimerQueue.Empty())
 		{
 			auto job = PopJob();
@@ -26,13 +26,13 @@ public:
 
 	void PushJob(std::shared_ptr<JobTimer> job)
 	{
-		std::lock_guard<std::recursive_mutex> lock(_lock);
+		std::lock_guard<std::mutex> lock(_lock);
 		_jobTimerQueue.Push(job);
 	}
 
 	std::shared_ptr<JobTimer> PopJob()
 	{
-		std::lock_guard<std::recursive_mutex> lock(_lock);
+		std::lock_guard<std::mutex> lock(_lock);
 		return _jobTimerQueue.Pop();
 	}
 

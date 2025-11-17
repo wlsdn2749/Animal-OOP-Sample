@@ -47,12 +47,12 @@ public:
 	virtual void print_name() override { std::cout << "My name is " << _name << std::endl; }
 	virtual void print_age() override
 	{
-		std::cout << "User Type " << " ID: " << GetAnimalID() << " Age: " << GetAge() << std::endl;
+		std::cout << "User" << " " << "Thread ID " << _threadKey << " ID: " << GetAnimalID() << " Age: " << GetAge() << std::endl;
 	}
 	
 	virtual void onUpdate() override
 	{
-		_age += 1;
+		_age += 2;
 		print_age();
 	}
 	const std::string& GetName()
