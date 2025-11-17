@@ -21,11 +21,12 @@ public:
 	}
 
 	template<typename T> requires std::derived_from<T, Animal>
-	void CreateAnimal()
+	decltype(auto) CreateAnimal()
 	{
 		auto animal = std::make_shared<T>();
 		animal->Init();
 		Insert(animal);
+		return animal;
 	}
 
 	bool Insert(std::shared_ptr<Animal> animal)
@@ -101,7 +102,7 @@ public:
 			int id							= _data.first;
 			std::shared_ptr<Animal> animal	= _data.second;
 
-			Executor::Instance().Execute(animal->GetThreadKey(), [animal, f]()
+			Executor::Instance().Post(animal->GetThreadKey(), [animal, f]()
 				{
 					f(animal);
 				}); 

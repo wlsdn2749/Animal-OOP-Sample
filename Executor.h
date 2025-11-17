@@ -2,10 +2,10 @@
 #include <thread>
 #include <vector>
 #include "Worker.h"
-#include "TimerWorker.h"
 #include "Singleton.h"
 #include <memory>
 #include <chrono>
+#include "Job.h"
 
 class Animal;
 
@@ -14,7 +14,7 @@ using namespace std::chrono;
 class Executor : public Singleton<Executor>
 {
 public:
-	inline static JobTimerQueue globalJobTimerQueue {};
+	inline static JobTimerQueue globalJobTimerQueue{};
 	inline static void LaunchJobTimerQueue()
 	{
 		_JobTimerQueueThread = std::thread([]()
@@ -25,12 +25,14 @@ public:
 				{
 					while (true)
 					{
-						while (!globalJobTimerQueue.Empty())
+						
+						auto job_vec = globalJobTimerQueue.PopAll(); // 이미 시간이 된경우
+						for (auto job : job_vec)
 						{
-							auto jobTimer = globalJobTimerQueue.Pop(); // 이미 시간이 된경우
-							if (jobTimer)
-								Executor::Handle_JobTimer(jobTimer);
-						}
+							if (job)
+								Executor::Handle_JobTimer(job);
+						}		
+					
 						std::this_thread::sleep_for(std::chrono::milliseconds(50)); // 20fps
 					}
 				}
@@ -41,10 +43,9 @@ public:
 			});
 	}
 
-	inline static void Handle_JobTimer(JobTimerSharedPtr jobTimer)
+	inline static void Handle_JobTimer(JobSharedPtr job)
 	{
-		std::cout << "Animal의 이전 Thread : " << jobTimer->GetSavedThreadKey() << "  Animal의 현재 Thread : " << jobTimer->GetAnimalThreadKey() << "\n";
-		Executor::Instance().Execute(jobTimer->GetAnimalThreadKey(), jobTimer->GetFunc()); // JobTimer -> Job으로 연결
+		Executor::Instance().Post(job->GetThreadId(), job->GetFunc()); // JobTimer -> Job으로 연결
 	}
 
 	inline static std::thread	_JobTimerQueueThread{};
@@ -70,23 +71,21 @@ public:
 
 public:
 	template <typename Func>
-	void Execute(uint32_t threadId, Func&& func)
+	void Post(uint32_t threadKey, Func&& func, int64_t t = 0)
 	{
-		auto worker = _workers[threadId % _workers.size()];
+		auto worker = _workers[threadKey % _workers.size()];
 		auto job = std::make_shared<Job>(std::forward<Func>(func));
-		worker->PushJob(job);
+
+
+		if (t <= 0) // 즉시 시작
+		{
+			worker->PushJob(job);
+		}
+		else
+		{
+			Executor::globalJobTimerQueue.Push(job, t);
+		}
 	}
-
-	template <typename Func>
-	void ExecuteTimer(std::shared_ptr<Animal> animal, int32_t threadKey, Func&& func, int t)
-	{
-		auto now		= steady_clock::now();
-		auto ms			= duration_cast<milliseconds>(now.time_since_epoch()).count();
-		auto jobTimer	= std::make_shared<JobTimer>(std::forward<Func>(func), threadKey, animal, ms + static_cast<int64_t>(t));
-
-		Executor::globalJobTimerQueue.Push(jobTimer);
-	}
-
 
 public:
 	const size_t GetWorkerSize() noexcept

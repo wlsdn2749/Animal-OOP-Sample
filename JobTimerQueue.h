@@ -5,58 +5,79 @@
 #include <chrono> 
 #include <memory>
 #include <iostream>
+#include "GlobalTime.h"
 
-using JobTimerSharedPtr = std::shared_ptr<JobTimer>;
-using namespace std::chrono;
+using JobSharedPtr = std::shared_ptr<Job>;
+using JobTimePair = std::pair<JobSharedPtr, int64_t>; // (JobSharedPtr, Time)
 
 
 // compare(a,b) - 더 빠른 시간이 최상위로 정렬
 struct compare
 {
-	bool operator()(JobTimerSharedPtr a_, JobTimerSharedPtr b_)
+	bool operator()(JobTimePair a_, JobTimePair b_)
 	{
-		return a_->GetTime() > b_->GetTime();
+		return a_.second > b_.second;
 	}
 };
 class JobTimerQueue
 {
 public:
-	JobTimerSharedPtr Pop()
+	JobSharedPtr Pop()
 	{
 		std::lock_guard<std::mutex> lock(_lock);
 
-		auto now = steady_clock::now();
-		auto nowMs = duration_cast<milliseconds>(now.time_since_epoch()).count();
-		auto jobTimer = Top();
+		auto nowMs = TimeUtil::GetCurrentTime();
+		auto jobTime = Top(); // pair
 		//std::cout << "nowMs: " << nowMs + 1000 << "jobTimer ms:" << jobTimer->GetTime() << std::endl;
-		if (jobTimer && jobTimer->GetTime() <= nowMs)
+		if (jobTime.first && jobTime.second <= nowMs)
 		{
-			_jobTimerQueue.pop();
-			return jobTimer;
+			_job_pq.pop();
+			return jobTime.first;
 		}
 		return nullptr; // 가장빠른 시간이없는경우
-
 	}
 
-	void Push(JobTimerSharedPtr jobtimer)
+	std::vector<JobSharedPtr> PopAll()
+	{
+		auto nowMs = TimeUtil::GetCurrentTime();
+		std::vector<JobSharedPtr> job_vec;
+
+		std::lock_guard<std::mutex> lock(_lock);
+		while (!_job_pq.empty())
+		{
+			auto jobTime = Top(); // pair
+			if (jobTime.first && jobTime.second <= nowMs)
+			{
+				_job_pq.pop();
+				job_vec.emplace_back(jobTime.first);
+			}
+			else
+			{
+				break;
+			}
+		}
+		return job_vec;
+	}
+
+	void Push(JobSharedPtr job, int64_t t)
 	{
 		std::lock_guard<std::mutex> lock(_lock);
-		_jobTimerQueue.emplace(jobtimer);
+		_job_pq.emplace(JobTimePair{job, TimeUtil::GetCurrentTime() + t});
 	}
 
 	bool Empty() const
 	{
-		return _jobTimerQueue.empty();
+		return _job_pq.empty();
 	}
 
-	JobTimerSharedPtr Top()
+	JobTimePair Top()
 	{
-		return _jobTimerQueue.top();
+		return _job_pq.top();
 	}
 
 
 private:
-	std::priority_queue<JobTimerSharedPtr, std::vector<JobTimerSharedPtr>, compare> _jobTimerQueue;
+	std::priority_queue<JobTimePair, std::vector<JobTimePair>, compare> _job_pq;
 	std::mutex _lock;
 
 };

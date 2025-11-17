@@ -17,6 +17,9 @@
     <Filter Include="Sample\Utilities">
       <UniqueIdentifier>{7f3c7579-51f7-4cd3-a01f-1fadce1e0563}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Sample\Utils">
+      <UniqueIdentifier>{64363224-70c8-4fa5-ae14-02ab4486c7fb}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Dog.h">
@@ -55,14 +58,14 @@
     <ClInclude Include="Singleton.h">
       <Filter>Sample\Utilities</Filter>
     </ClInclude>
-    <ClInclude Include="TimerWorker.h">
-      <Filter>Sample\Executor</Filter>
-    </ClInclude>
     <ClInclude Include="JobTimerQueue.h">
       <Filter>Sample\Executor</Filter>
     </ClInclude>
     <ClInclude Include="ThreadLaunchManager.h">
       <Filter>Sample</Filter>
+    </ClInclude>
+    <ClInclude Include="GlobalTime.h">
+      <Filter>Sample\Utils</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -89,9 +92,6 @@
     </ClCompile>
     <ClCompile Include="Singleton.cpp">
       <Filter>Sample\Utilities</Filter>
-    </ClCompile>
-    <ClCompile Include="TimerWorker.cpp">
-      <Filter>Sample\Executor</Filter>
     </ClCompile>
     <ClCompile Include="JobTimerQueue.cpp">
       <Filter>Sample\Executor</Filter>

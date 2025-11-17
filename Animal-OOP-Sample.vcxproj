@@ -130,13 +130,13 @@
     <ClInclude Include="Dog.h" />
     <ClInclude Include="Duck.h" />
     <ClInclude Include="Executor.h" />
+    <ClInclude Include="GlobalTime.h" />
     <ClInclude Include="Job.h" />
     <ClInclude Include="JobTimerQueue.h" />
     <ClInclude Include="Owl.h" />
     <ClInclude Include="Pig.h" />
     <ClInclude Include="Singleton.h" />
     <ClInclude Include="ThreadLaunchManager.h" />
-    <ClInclude Include="TimerWorker.h" />
     <ClInclude Include="User.h" />
     <ClInclude Include="Worker.h" />
   </ItemGroup>
@@ -149,7 +149,6 @@
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Singleton.cpp" />
     <ClCompile Include="ThreadLaunchManager.cpp" />
-    <ClCompile Include="TimerWorker.cpp" />
     <ClCompile Include="User.cpp" />
     <ClCompile Include="Worker.cpp" />
   </ItemGroup>

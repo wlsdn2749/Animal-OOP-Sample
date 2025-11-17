@@ -17,7 +17,7 @@ public:
 	}
 
 public:
-	void Execute()
+	virtual void Execute()
 	{
 		_func();
 	}
@@ -26,43 +26,39 @@ public:
 	{
 		return _func;
 	}
+	
+	virtual int32_t GetThreadId()
+	{
+		return 0;
+	}
 
 protected:
 	std::function<void(void)> _func;
 };
 
-
-class JobTimer : public Job
+class AnimalJob : public Job
 {
 public:
 	template<typename Func = std::function<void(void)>>
-	JobTimer(Func&& func, int32_t threadKey, std::shared_ptr<Animal> animal, int64_t t)
-		: Job(std::forward<Func>(func)) // 기반 생성자를 명시적으로 호출
-		, _threadKey(threadKey)
+	AnimalJob(Func&& func, std::shared_ptr<Animal> animal)
+		: Job(std::forward<Func>(func)) // Job의 생성자 그대로 사용
 		, _animal(animal)
-		, _t(t)
 	{
 
 	}
-
-	bool operator<(const JobTimer& other) const
+	virtual ~AnimalJob()
 	{
-		return _t < other._t;
+
 	}
 
 public:
-	int32_t GetSavedThreadKey()
+	virtual void Execute() override
 	{
-		return _threadKey;
+		_func();
 	}
-	int32_t GetAnimalThreadKey();
-	int64_t GetTime()
-	{
-		return _t;
-	}
+
+	virtual int32_t GetThreadId() override;
 
 private:
 	std::shared_ptr<Animal> _animal;
-	int32_t					_threadKey;
-	int64_t					_t{};
 };

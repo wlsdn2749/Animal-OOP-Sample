@@ -179,39 +179,20 @@ namespace Test
 			}
 		}
 	}
-	
-	void Test_PrintAnimalSounds()
+
+
+	/// <summary>
+	/// 1. LevelUp 10초 후 실행
+	/// 2. AddExp 5초 후 실행
+	/// 3. AddMoney 3초 후 실행
+	/// 각 테스트는 Main Thread에서 호출되어 특정 시간 후에 실행되는 것과
+	/// 실제 User가 있는 Thread에서 실행되는것이 명확히 확인되어야 한다.
+	/// </summary>
+
+	void Test_UserTest_01()
 	{
-		for (int i = 0; i < 5; ++i)
-		{
-			AnimalManager::Instance().ForeachAnimals([](std::shared_ptr<Animal> animal)
-				{
-					animal->print_sound();
-				});
-
-			std::this_thread::sleep_for(std::chrono::seconds(3));
-		}
+		
 	}
-
-
-	void Test_UpdateThreadkeys()
-	{
-		std::this_thread::sleep_for(std::chrono::seconds(10)); 
-
-		auto func1 = []()
-			{
-				AnimalManager::Instance().ForeachAnimals([](std::shared_ptr<Animal> animal)
-					{
-						animal->updateThreadKey();
-					});
-			};
-
-		ThreadLaunchManager::Instance().InsertFunc(func1);
-		ThreadLaunchManager::Instance().Start();
-		std::cout << "-------------------------Thread 변경-----------------------------------" << std::endl;
-
-	}
-
 }
 
 int main()
@@ -221,9 +202,6 @@ int main()
 	Executor::LaunchJobTimerQueue(); //
 
 	Test::Test_UserMoveThread();
-	Test::Test_UpdateThreadkeys(); // main
-	Test::Test_PrintAnimalSounds(); // main
-	
 	
 	while (true)
 	{
