@@ -32,8 +32,7 @@ public:
 					while (true)
 					{
 						self->ExecuteJob();
-						if (self->Size() == 0)
-							std::this_thread::sleep_for(std::chrono::milliseconds(1000));
+						//std::this_thread::sleep_for(std::chrono::milliseconds(50)); // 20fps
 					}
 				}
 				catch (const std::exception& e)
@@ -43,16 +42,13 @@ public:
 			});
 	}
 
-	void ExecuteJob()
+	virtual void ExecuteJob()
 	{
-		std::lock_guard<std::recursive_mutex> lock(_lock);
+		if (!_jobQueue.empty())
 		{
-			if (!_jobQueue.empty())
-			{
-				auto job = PopJob();
-				job->Execute();
-			}
-		}
+			auto job = PopJob();
+			job->Execute();
+		}		
 	}
 
 	void PushJob(std::shared_ptr<Job> job)
@@ -63,6 +59,7 @@ public:
 
 	std::shared_ptr<Job> PopJob()
 	{
+		std::lock_guard<std::recursive_mutex> lock(_lock);
 		auto job = _jobQueue.front();
 		_jobQueue.pop();
 		return job;
@@ -73,9 +70,11 @@ public:
 		return _jobQueue.size();
 	}
 
-private:
-	std::queue<std::shared_ptr<Job>> _jobQueue{};
+protected:	
 	std::recursive_mutex _lock{};
 	std::thread _thread;
+
+private:
+	std::queue<std::shared_ptr<Job>> _jobQueue{};
 };
 

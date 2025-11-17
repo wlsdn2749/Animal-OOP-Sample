@@ -14,6 +14,9 @@
     <Filter Include="Sample\Executor">
       <UniqueIdentifier>{0a586b9a-da6c-4619-90c9-4e5a43ea9134}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Sample\Utilities">
+      <UniqueIdentifier>{7f3c7579-51f7-4cd3-a01f-1fadce1e0563}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Dog.h">
@@ -37,17 +40,29 @@
     <ClInclude Include="AnimalManager.h">
       <Filter>Sample\Animals</Filter>
     </ClInclude>
-    <ClInclude Include="ThreadLaunchManager.h" />
     <ClInclude Include="User.h">
       <Filter>Sample\Animals</Filter>
     </ClInclude>
-    <ClInclude Include="Worker.h" />
-    <ClInclude Include="Singleton.h" />
     <ClInclude Include="Job.h">
       <Filter>Sample\Executor</Filter>
     </ClInclude>
     <ClInclude Include="Executor.h">
       <Filter>Sample\Executor</Filter>
+    </ClInclude>
+    <ClInclude Include="Worker.h">
+      <Filter>Sample\Executor</Filter>
+    </ClInclude>
+    <ClInclude Include="Singleton.h">
+      <Filter>Sample\Utilities</Filter>
+    </ClInclude>
+    <ClInclude Include="TimerWorker.h">
+      <Filter>Sample\Executor</Filter>
+    </ClInclude>
+    <ClInclude Include="JobTimerQueue.h">
+      <Filter>Sample\Executor</Filter>
+    </ClInclude>
+    <ClInclude Include="ThreadLaunchManager.h">
+      <Filter>Sample</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -60,17 +75,29 @@
     <ClCompile Include="AnimalManager.cpp">
       <Filter>Sample\Animals</Filter>
     </ClCompile>
-    <ClCompile Include="ThreadLaunchManager.cpp" />
     <ClCompile Include="User.cpp">
       <Filter>Sample\Animals</Filter>
     </ClCompile>
-    <ClCompile Include="Worker.cpp" />
-    <ClCompile Include="Singleton.cpp" />
     <ClCompile Include="Executor.cpp">
       <Filter>Sample\Executor</Filter>
     </ClCompile>
     <ClCompile Include="Job.cpp">
       <Filter>Sample\Executor</Filter>
+    </ClCompile>
+    <ClCompile Include="Worker.cpp">
+      <Filter>Sample\Executor</Filter>
+    </ClCompile>
+    <ClCompile Include="Singleton.cpp">
+      <Filter>Sample\Utilities</Filter>
+    </ClCompile>
+    <ClCompile Include="TimerWorker.cpp">
+      <Filter>Sample\Executor</Filter>
+    </ClCompile>
+    <ClCompile Include="JobTimerQueue.cpp">
+      <Filter>Sample\Executor</Filter>
+    </ClCompile>
+    <ClCompile Include="ThreadLaunchManager.cpp">
+      <Filter>Sample</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

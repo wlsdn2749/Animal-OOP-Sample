@@ -52,12 +52,8 @@ public:
 	
 	virtual void onUpdate() override
 	{
-		++_updateCnt;
-		if (_updateCnt % 20 == 0) // 20fps 업데이트, 1초당 1회 동작, 1살 증가
-		{
-			_age += 1;
-			print_age();
-		}
+		_age += 1;
+		print_age();
 	}
 	const std::string& GetName()
 	{

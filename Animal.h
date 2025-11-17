@@ -34,12 +34,8 @@ public:
 	}
 	virtual void onUpdate()
 	{
-		++_updateCnt;
-		if (_updateCnt % 20 == 0) // 20fps 업데이트, 1초당 1회 동작, 2살 증가
-		{
-			_age += 2;
-			print_age();
-		}
+		_age++;
+		print_age();
 	}
 
 	void Update()
@@ -52,6 +48,7 @@ public:
 			}, 1000); // 1초에 한번 호출
 
 	};
+
 
 	void Init()
 	{
