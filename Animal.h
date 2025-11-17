@@ -35,14 +35,14 @@ public:
 	virtual void onUpdate()
 	{
 		_age++;
-		print_age();
+		//print_age();
 	}
 
 	void Update()
 	{
 		onUpdate(); // virtual 
 
-		Executor::Instance().ExecuteTimer(_threadKey, [self = shared_from_this()]()
+		Executor::Instance().ExecuteTimer(shared_from_this(), _threadKey, [self = shared_from_this()]()
 			{
 				self->Update();
 			}, 1000); // ThreadKey와. 1초에 한번 호출

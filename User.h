@@ -53,7 +53,7 @@ public:
 	virtual void onUpdate() override
 	{
 		_age += 2;
-		print_age();
+		//print_age();
 	}
 	const std::string& GetName()
 	{

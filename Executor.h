@@ -43,6 +43,7 @@ public:
 
 	inline static void Handle_JobTimer(JobTimerSharedPtr jobTimer)
 	{
+		std::cout << "Animal의 이전 Thread : " << jobTimer->GetSavedThreadKey() << "  Animal의 현재 Thread : " << jobTimer->GetAnimalThreadKey() << "\n";
 		Executor::Instance().Execute(jobTimer->GetAnimalThreadKey(), jobTimer->GetFunc()); // JobTimer -> Job으로 연결
 	}
 
@@ -77,11 +78,11 @@ public:
 	}
 
 	template <typename Func>
-	void ExecuteTimer(uint32_t threadId, Func&& func, int t)
+	void ExecuteTimer(std::shared_ptr<Animal> animal, int32_t threadKey, Func&& func, int t)
 	{
 		auto now		= steady_clock::now();
 		auto ms			= duration_cast<milliseconds>(now.time_since_epoch()).count();
-		auto jobTimer	= std::make_shared<JobTimer>(std::forward<Func>(func), threadId, ms + static_cast<int64_t>(t));
+		auto jobTimer	= std::make_shared<JobTimer>(std::forward<Func>(func), threadKey, animal, ms + static_cast<int64_t>(t));
 
 		Executor::globalJobTimerQueue.Push(jobTimer);
 	}
