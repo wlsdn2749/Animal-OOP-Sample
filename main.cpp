@@ -218,6 +218,7 @@ int main()
 {
 	Executor::Instance().initialize(2); // Worker Thread 2
 	Executor::Instance().StartAll();
+	Executor::LaunchJobTimerQueue(); //
 
 	Test::Test_UserMoveThread();
 	Test::Test_UpdateThreadkeys(); // main

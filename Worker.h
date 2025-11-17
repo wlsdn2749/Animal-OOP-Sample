@@ -52,16 +52,9 @@ public:
 			if(job)
 				job->Execute();
 		}	
-
-		if (!_jobTimerQueue.Empty())
-		{
-			auto job = PopJobTimer();
-			if (job)
-				job->Execute();
-		}
 	}
 
-// Timer
+// Job
 	void PushJob(std::shared_ptr<Job> job)
 	{
 		std::lock_guard<std::mutex> lock(_lock);
@@ -81,18 +74,6 @@ public:
 		return job;
 	}
 
-// JobTimer
-	void PushJobTimer(std::shared_ptr<JobTimer> jobTimer)
-	{
-		std::lock_guard<std::mutex> timerLock(_timerLock);
-		_jobTimerQueue.Push(jobTimer);
-	}
-
-	std::shared_ptr<JobTimer> PopJobTimer()
-	{
-		std::lock_guard<std::mutex> timerLock(_timerLock);
-		return _jobTimerQueue.Pop();
-	}
 public:
 	const size_t Size() noexcept
 	{
@@ -101,12 +82,9 @@ public:
 
 protected:	
 	std::mutex _lock{};
-	std::mutex _timerLock{};
-
 	std::thread _thread;
 
 private:
 	std::queue<std::shared_ptr<Job>>		_jobQueue{};
-	JobTimerQueue							_jobTimerQueue{};
 };
 

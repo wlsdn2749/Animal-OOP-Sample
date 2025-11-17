@@ -1,5 +1,8 @@
 ﻿#pragma once
 #include <functional>
+#include <memory>
+
+class Animal;
 
 class Job
 {
@@ -17,6 +20,11 @@ public:
 		_func();
 	}
 
+	std::function<void(void)> GetFunc()
+	{
+		return _func;
+	}
+
 protected:
 	std::function<void(void)> _func;
 };
@@ -26,8 +34,9 @@ class JobTimer : public Job
 {
 public:
 	template<typename Func = std::function<void(void)>>
-	JobTimer(Func&& func, int64_t t)
+	JobTimer(Func&& func, int32_t threadKey, int64_t t)
 		: Job(std::forward<Func>(func)) // 기반 생성자를 명시적으로 호출
+		, _threadKey(threadKey)
 		, _t(t)
 	{
 
@@ -39,6 +48,10 @@ public:
 	}
 
 public:
+	int32_t GetAnimalThreadKey()
+	{
+		return _threadKey;
+	}
 
 	int64_t GetTime()
 	{
@@ -46,5 +59,6 @@ public:
 	}
 
 private:
-	int64_t _t{};
+	int64_t					_t{};
+	int32_t					_threadKey{};
 };

@@ -101,7 +101,7 @@ public:
 			int id							= _data.first;
 			std::shared_ptr<Animal> animal	= _data.second;
 
-			Executor::Instance().Execute(animal->GetThreadkey(), [animal, f]()
+			Executor::Instance().Execute(animal->GetThreadKey(), [animal, f]()
 				{
 					f(animal);
 				}); 

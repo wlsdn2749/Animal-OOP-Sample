@@ -30,7 +30,7 @@ public:
 	virtual void print_name() { std::cout << "Default: print_name" << std::endl; };
 	virtual void print_age() 
 	{
-		std::cout <<"Animal" << " " << "Thread ID " << _threadKey << " ID: " << GetAnimalID() << " Age: " << GetAge() << std::endl;
+		std::cout <<"Animal" << " " << "Thread ID " << _threadKey << " ID: " << _id << " Age: " << GetAge() << std::endl;
 	}
 	virtual void onUpdate()
 	{
@@ -42,10 +42,10 @@ public:
 	{
 		onUpdate(); // virtual 
 
-		Executor::Instance().Execute(_threadKey, [self = shared_from_this()]()
+		Executor::Instance().ExecuteTimer(_threadKey, [self = shared_from_this()]()
 			{
 				self->Update();
-			}, 1000); // 1초에 한번 호출
+			}, 1000); // ThreadKey와. 1초에 한번 호출
 
 	};
 	
@@ -75,7 +75,7 @@ public:
 		return _age;
 	}
 
-	const int GetThreadkey()
+	const int GetThreadKey()
 	{
 		return _threadKey;
 	}
