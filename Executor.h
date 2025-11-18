@@ -51,7 +51,7 @@ public:
 	inline static std::thread	_JobTimerQueueThread{};
 
 public:
-	void initialize(size_t count)
+	void initialize(size_t count) // Workers (Thread)
 	{
 		_workers.reserve(count);
 		for (int i = 0; i < count; ++i)
@@ -59,32 +59,28 @@ public:
 			_workers.emplace_back(std::make_shared<Worker>());
 		}
 
-	}
-
-	void StartAll()
-	{
 		for (auto worker : _workers)
 		{
 			worker->Start();
 		}
+
+		Executor::LaunchJobTimerQueue();
 	}
 
 public:
 	template <typename Func>
-	void Post(uint32_t threadKey, Func&& func, int64_t t = 0)
+	void Post(uint32_t threadKey, Func&& func)
 	{
 		auto worker = _workers[threadKey % _workers.size()];
 		auto job = std::make_shared<Job>(std::forward<Func>(func));
 
+		worker->PushJob(job);
 
-		if (t <= 0) // 즉시 시작
-		{
-			worker->PushJob(job);
-		}
-		else
-		{
-			Executor::globalJobTimerQueue.Push(job, t);
-		}
+	}
+
+	void PostDelay(int32_t threadKey, int64_t t, JobSharedPtr job)
+	{
+		Executor::globalJobTimerQueue.Push(job, t);
 	}
 
 public:

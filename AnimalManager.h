@@ -21,12 +21,12 @@ public:
 	}
 
 	template<typename T> requires std::derived_from<T, Animal>
-	decltype(auto) CreateAnimal()
+	int CreateAnimal()
 	{
 		auto animal = std::make_shared<T>();
 		animal->Init();
 		Insert(animal);
-		return animal;
+		return animal->GetAnimalID();
 	}
 
 	bool Insert(std::shared_ptr<Animal> animal)
@@ -61,7 +61,6 @@ public:
 		return true;
 
 	}
-
 
 	void Print()
 	{
@@ -108,6 +107,7 @@ public:
 				}); 
 		}
 	}
+
 
 private:
 	std::unordered_map<int, std::shared_ptr<Animal>>	_repo_1{};

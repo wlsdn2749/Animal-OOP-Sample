@@ -29,7 +29,7 @@ public:
 	
 	virtual int32_t GetThreadId()
 	{
-		return 0;
+		return -1;
 	}
 
 protected:
@@ -40,9 +40,9 @@ class AnimalJob : public Job
 {
 public:
 	template<typename Func = std::function<void(void)>>
-	AnimalJob(Func&& func, std::shared_ptr<Animal> animal)
-		: Job(std::forward<Func>(func)) // Job의 생성자 그대로 사용
-		, _animal(animal)
+	AnimalJob(std::shared_ptr<Animal> animal, Func&& func)
+		: _animal(animal)
+		, Job(std::forward<Func>(func)) // Job의 생성자 그대로 사용
 	{
 
 	}
@@ -59,6 +59,10 @@ public:
 
 	virtual int32_t GetThreadId() override;
 
+	std::shared_ptr<Animal> GetAnimal() { return _animal; }
+
 private:
 	std::shared_ptr<Animal> _animal;
+
+	
 };

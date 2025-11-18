@@ -3,6 +3,8 @@
 #include <atomic>
 #include "Executor.h"
 
+class AnimalJob;
+
 class Animal : public std::enable_shared_from_this<Animal>
 {
 public:
@@ -30,7 +32,7 @@ public:
 	virtual void print_name() { std::cout << "Default: print_name" << std::endl; };
 	virtual void print_age() 
 	{
-		std::cout <<"Animal" << " " << "Thread ID " << _threadKey << " ID: " << _id << " Age: " << GetAge() << std::endl;
+		std::cout <<"Animal" << " " << "Thread ID " << std::this_thread::get_id() << " ID: " << _id << " Age: " << GetAge() << std::endl;
 	}
 	virtual void onUpdate()
 	{
@@ -42,10 +44,10 @@ public:
 	{
 		onUpdate(); // virtual 
 
-		Executor::Instance().Post(_threadKey, [self = shared_from_this()]()
+		PostDelay<AnimalJob>(shared_from_this(), 1000, [self = shared_from_this()]()
 			{
 				self->Update();
-			}, 1000); // ThreadKey와. 1초에 한번 호출
+			});
 
 	};
 	
@@ -62,6 +64,23 @@ public:
 			{
 				self->Update();
 			});
+	}
+
+	template <typename T, typename... Args>
+	void Post(Args&&... args)
+	{
+		/*auto job = std::make_shared<T>(std::forward<Args>(args)...);
+
+		Executor::Instance().Post<T>(std::forward<Args>(args)...);*/
+		;
+	}
+
+	template<typename T, typename... Args>
+	void PostDelay(std::shared_ptr<Animal> animal, int64_t t, Args&&... args)
+	{
+		auto job = std::make_shared<T>(animal, std::forward<Args>(args)...);
+
+		Executor::Instance().PostDelay(job->GetThreadId(), t, job);
 	}
 
 public:

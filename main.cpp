@@ -15,7 +15,7 @@ namespace Test
 	/*---------------------------------------------------------------------
 		Test 1. OOP Basic + Thread Basic
 	---------------------------------------------------------------------*/
-	std::function<void(int)> Insert_N_Users = [](int n)
+	/*std::function<void(int)> Insert_N_Users = [](int n)
 		{
 			int processCount = 0;
 
@@ -80,7 +80,7 @@ namespace Test
 		std::cout << "Phase 3 - 실제 소멸자 호출 : " << User::GetDtorCnt() << std::endl;
 
 		User::ClearStatistics();
-	}
+	}*/
 
 
 	/*---------------------------------------------------------------------
@@ -163,22 +163,22 @@ namespace Test
 	/*---------------------------------------------------------------------
 		Test 3. Thread-LoadBalacing, But Animals Can move any other Thread.
 	---------------------------------------------------------------------*/
-	void Test_UserMoveThread()
-	{
-		for (int i = 0; i < 1; ++i) // 동물 100마리
-		{
-			AnimalManager::Instance().CreateAnimal<Dog>();
-			AnimalManager::Instance().CreateAnimal<Cat>();
-			AnimalManager::Instance().CreateAnimal<Owl>();
-			AnimalManager::Instance().CreateAnimal<Duck>();
-			AnimalManager::Instance().CreateAnimal<Pig>();
+	//void Test_UserMoveThread()
+	//{
+	//	for (int i = 0; i < 1; ++i) // 동물 100마리
+	//	{
+	//		AnimalManager::Instance().CreateAnimal<Dog>();
+	//		AnimalManager::Instance().CreateAnimal<Cat>();
+	//		AnimalManager::Instance().CreateAnimal<Owl>();
+	//		AnimalManager::Instance().CreateAnimal<Duck>();
+	//		AnimalManager::Instance().CreateAnimal<Pig>();
 
-			for (int j = 0; j < 5; ++j) // 사람 100명
-			{
-				AnimalManager::Instance().CreateAnimal<User>();
-			}
-		}
-	}
+	//		for (int j = 0; j < 5; ++j) // 사람 100명
+	//		{
+	//			AnimalManager::Instance().CreateAnimal<User>();
+	//		}
+	//	}
+	//}
 
 
 	/// <summary>
@@ -191,17 +191,40 @@ namespace Test
 
 	void Test_UserTest_01()
 	{
+		for (int i = 0; i < 5; ++i)
+		{
+			int uid = AnimalManager::Instance().CreateAnimal<User>();
+			auto user = std::dynamic_pointer_cast<User>(AnimalManager::Instance().Find(uid));
+
+			user->PostDelay<AnimalJob>(user, 10000, [user]()
+				{
+					user->LevelUp();
+				}); // 10초)
+
+			user->LevelUp();
 		
+
+			int expAmount = 5;
+			user->PostDelay<AnimalJob>(user, 5000, [user, expAmount]()
+				{
+					user->AddExp(expAmount);
+				}); // 5초
+
+			int moneyAmount = 10;
+			user->PostDelay<AnimalJob>(user, 3000, [user, moneyAmount]()
+				{
+					user->AddMoney(moneyAmount);
+				}); // 3초
+		}
 	}
 }
 
 int main()
 {
 	Executor::Instance().initialize(2); // Worker Thread 2
-	Executor::Instance().StartAll();
-	Executor::LaunchJobTimerQueue(); //
 
-	Test::Test_UserMoveThread();
+	Test::Test_UserTest_01();
+
 	
 	while (true)
 	{

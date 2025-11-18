@@ -47,7 +47,7 @@ public:
 	virtual void print_name() override { std::cout << "My name is " << _name << std::endl; }
 	virtual void print_age() override
 	{
-		std::cout << "User" << " " << "Thread ID " << _threadKey << " ID: " << GetAnimalID() << " Age: " << GetAge() << std::endl;
+		std::cout << "User" << " " << "Thread ID " << std::this_thread::get_id() << " ThreadKey " << _threadKey << " ID: " << GetAnimalID() << " Age: " << GetAge() << std::endl;
 	}
 	
 	virtual void onUpdate() override
@@ -60,6 +60,34 @@ public:
 		return _name;
 	}
 
+public:
+	bool LevelUp()
+	{
+		int pLevel = _level;
+		++_level;
+		std::cout << "레벨 증가: " << pLevel << " --> " << _level << "\n";
+		return true;
+	}
+
+	bool AddExp(int32_t amount)
+	{
+		int pExp = _exp;
+		_exp += amount;
+		std::cout << "경험치 증가: " << pExp << " --> " << _exp << "\n";
+		return true;
+	}
+
+	bool AddMoney(int32_t amount)
+	{
+		int pMoney = _money;
+		_money += amount;
+		std::cout << "돈 증가: " << pMoney << " --> " << _money << "\n";
+		return true;
+	}
 private:
 	std::string _name{};
+	int32_t		_level{};
+	int32_t		_exp{};
+	int32_t		_money{};
+	 
 };
