@@ -47,7 +47,7 @@ public:
 	virtual void print_name() override { std::cout << "My name is " << _name << std::endl; }
 	virtual void print_age() override
 	{
-		std::cout << "User" << " " << "Thread ID " << std::this_thread::get_id() << " ThreadKey " << _threadKey << " ID: " << GetAnimalID() << " Age: " << GetAge() << std::endl;
+		std::cout << "CurrentTime: " << TimeUtil::GetCurrentTime() % 1000000 << " User" << " " << "Thread ID " << std::this_thread::get_id() << " ThreadKey " << _threadKey << " ID: " << GetAnimalID() << " Age: " << GetAge() << std::endl;
 	}
 	
 	virtual void onUpdate() override

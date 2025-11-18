@@ -2,6 +2,7 @@
 #include <iostream>
 #include <atomic>
 #include "Executor.h"
+#include "GlobalTime.h"
 
 class AnimalJob;
 
@@ -32,7 +33,7 @@ public:
 	virtual void print_name() { std::cout << "Default: print_name" << std::endl; };
 	virtual void print_age() 
 	{
-		std::cout <<"Animal" << " " << "Thread ID " << std::this_thread::get_id() << " ID: " << _id << " Age: " << GetAge() << std::endl;
+		std::cout <<"CurrentTime: " << TimeUtil::GetCurrentTime() << "Animal" << " " << "Thread ID " << std::this_thread::get_id() << " ID: " << _id << " Age: " << GetAge() << std::endl;
 	}
 	virtual void onUpdate()
 	{

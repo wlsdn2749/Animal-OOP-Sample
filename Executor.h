@@ -33,7 +33,7 @@ public:
 								Executor::Handle_JobTimer(job);
 						}		
 					
-						std::this_thread::sleep_for(std::chrono::milliseconds(50)); // 20fps
+						std::this_thread::sleep_for(std::chrono::milliseconds(5)); // 200fps
 					}
 				}
 				catch (const std::exception& e)
